@@ -9,7 +9,26 @@
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
+<div id="lockScreen" style="
+position:fixed;
+inset:0;
+background:#111;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+color:white;
+z-index:9999;
+">
+  <h2>Área privada 💖</h2>
+  <input type="password" id="passwordInput" placeholder="Digite a senha"
+  style="padding:8px;border-radius:8px;border:none;margin:10px;">
+  <button onclick="checkPassword()"
+  style="padding:8px 15px;border:none;border-radius:8px;background:#ff2e74;color:white;">
+  Entrar
+  </button>
+  <p id="lockMessage" style="margin-top:10px;color:#ff8080;"></p>
+</div>
 <div class="app">
 
 <header>
