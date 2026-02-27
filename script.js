@@ -4,70 +4,107 @@ let currentYear = new Date().getFullYear();
 let selectedDate = null;
 let selectedImage = null;
 
-function updateTimer(){
-  const now=new Date();
-  const diff=now-namoroInicio;
-  const days=Math.floor(diff/(1000*60*60*24));
-  const months=Math.floor(days/30);
+// ================= TIMER =================
 
-  document.getElementById("timer").innerHTML=
+function updateTimer(){
+  const now = new Date();
+  const diff = now - namoroInicio;
+  const days = Math.floor(diff/(1000*60*60*24));
+  const months = Math.floor(days/30);
+
+  document.getElementById("timer").innerHTML =
   `Estamos juntos há ${months} meses 💖 (${days} dias)`;
+
+  const dia = now.getDate();
+  const mes = now.getMonth() + 1;
+
+  // 🎉 DIA 27/02
+  if(dia === 27 && mes === 2){
+
+    const banner = document.getElementById("anniversary");
+    banner.style.display = "block";
+
+    banner.innerHTML = `
+      <div style="
+        font-size:40px;
+        text-align:center;
+        font-weight:900;
+        line-height:1.4;
+      ">
+        💖💖💖💖💖<br>
+        FELIZ ANIVERSÁRIO MEU AMOR!!!<br>
+        💖 EU TE AMO INFINITAMENTE 💖<br>
+        💖💖💖💖💖
+      </div>
+    `;
+
+    document.body.style.background =
+    "linear-gradient(45deg,#ff2e74,#ff7e5f,#ff2e74)";
+  }
 }
+// ================= POSTS =================
 
 function getPosts(){
-  return JSON.parse(localStorage.getItem("posts")||"[]");
+  return JSON.parse(localStorage.getItem("posts") || "[]");
 }
 
 function savePosts(posts){
-  localStorage.setItem("posts",JSON.stringify(posts));
+  localStorage.setItem("posts", JSON.stringify(posts));
 }
 
-function populateSelectors(){
-  const monthSelect=document.getElementById("month");
-  const yearSelect=document.getElementById("year");
+// ================= CALENDÁRIO =================
 
-  const months=["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+function populateSelectors(){
+  const monthSelect = document.getElementById("month");
+  const yearSelect = document.getElementById("year");
+
+  const months = ["Jan","Fev","Mar","Abr","Mai","Jun","Jul","Ago","Set","Out","Nov","Dez"];
+
+  monthSelect.innerHTML = "";
+  yearSelect.innerHTML = "";
 
   months.forEach((m,i)=>{
-    monthSelect.innerHTML+=`<option value="${i}">${m}</option>`;
+    monthSelect.innerHTML += `<option value="${i}">${m}</option>`;
   });
 
-  for(let y=2020;y<=2035;y++){
-    yearSelect.innerHTML+=`<option value="${y}">${y}</option>`;
+  for(let y=2020; y<=2035; y++){
+    yearSelect.innerHTML += `<option value="${y}">${y}</option>`;
   }
 
-  monthSelect.value=currentMonth;
-  yearSelect.value=currentYear;
+  monthSelect.value = currentMonth;
+  yearSelect.value = currentYear;
 
-  monthSelect.onchange=()=>{
-    currentMonth=parseInt(monthSelect.value);
+  monthSelect.onchange = ()=>{
+    currentMonth = parseInt(monthSelect.value);
     generateCalendar();
   };
 
-  yearSelect.onchange=()=>{
-    currentYear=parseInt(yearSelect.value);
+  yearSelect.onchange = ()=>{
+    currentYear = parseInt(yearSelect.value);
     generateCalendar();
   };
 }
 
 function generateCalendar(){
-  const calendar=document.getElementById("calendar");
-  calendar.innerHTML="";
-  const daysInMonth=new Date(currentYear,currentMonth+1,0).getDate();
-  const posts=getPosts();
+  const calendar = document.getElementById("calendar");
+  calendar.innerHTML = "";
 
-  for(let d=1;d<=daysInMonth;d++){
-    const date=`${currentYear}-${String(currentMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
-    const hasPost=posts.some(p=>p.date===date);
+  const daysInMonth = new Date(currentYear,currentMonth+1,0).getDate();
+  const posts = getPosts();
 
-    const day=document.createElement("div");
+  for(let d=1; d<=daysInMonth; d++){
+    const date = `${currentYear}-${String(currentMonth+1).padStart(2,"0")}-${String(d).padStart(2,"0")}`;
+    const hasPost = posts.some(p=>p.date===date);
+
+    const day = document.createElement("div");
     day.classList.add("day");
+
     if(hasPost) day.classList.add("has-post");
 
-    day.innerText=d;
+    day.innerText = d;
 
-    day.onclick=()=>{
-      selectedDate=date;
+    day.onclick = ()=>{
+      selectedDate = date;
       document.querySelectorAll(".day").forEach(el=>el.classList.remove("selected"));
       day.classList.add("selected");
       renderPosts(date);
@@ -78,37 +115,40 @@ function generateCalendar(){
 }
 
 function renderPosts(date){
-  const container=document.getElementById("posts");
-  const title=document.getElementById("selected-date-title");
-  container.innerHTML="";
+  const container = document.getElementById("posts");
+  const title = document.getElementById("selected-date-title");
+  container.innerHTML = "";
 
   if(!date){
-    title.innerText="";
+    title.innerText = "";
     return;
   }
 
-  title.innerText="Memórias de " + date;
+  title.innerText = "Memórias de " + date;
 
-  const posts=getPosts().filter(p=>p.date===date);
+  const posts = getPosts().filter(p=>p.date===date);
 
-  if(posts.length===0){
-    container.innerHTML="<div style='padding:20px;text-align:center;color:#888;'>Nenhuma memória nesse dia 💭</div>";
+  if(posts.length === 0){
+    container.innerHTML =
+    "<div style='padding:20px;text-align:center;color:#888;'>Nenhuma memória nesse dia 💭</div>";
     return;
   }
 
   posts.forEach(p=>{
-    container.innerHTML+=`
+    container.innerHTML += `
       <div class="post">
         <div class="post-image-wrapper">
           <img src="${p.image}">
         </div>
         <div class="post-info">
-          ${p.caption}
+          ${p.caption || ""}
         </div>
       </div>
     `;
   });
 }
+
+// ================= MODAL =================
 
 function openPostModal(){
   if(!selectedDate){
@@ -117,23 +157,22 @@ function openPostModal(){
   }
 
   document.getElementById("modal").classList.add("active");
-  document.getElementById("post-date").value=selectedDate;
 }
 
 function closeModal(){
   document.getElementById("modal").classList.remove("active");
-  selectedImage=null;
-  document.getElementById("preview").style.display="none";
+  selectedImage = null;
+  document.getElementById("preview").style.display = "none";
 }
 
 function previewImage(e){
-  const reader=new FileReader();
-  reader.onload=function(event){
-    selectedImage=event.target.result;
-    const img=document.getElementById("preview");
-    img.src=selectedImage;
-    img.style.display="block";
-  }
+  const reader = new FileReader();
+  reader.onload = function(event){
+    selectedImage = event.target.result;
+    const img = document.getElementById("preview");
+    img.src = selectedImage;
+    img.style.display = "block";
+  };
   reader.readAsDataURL(e.target.files[0]);
 }
 
@@ -143,13 +182,13 @@ function publish(){
     return;
   }
 
-  const caption=document.getElementById("caption").value;
-  const posts=getPosts();
+  const caption = document.getElementById("caption").value;
+  const posts = getPosts();
 
   posts.unshift({
-    image:selectedImage,
-    caption:caption,
-    date:selectedDate
+    image: selectedImage,
+    caption: caption,
+    date: selectedDate
   });
 
   savePosts(posts);
@@ -157,6 +196,9 @@ function publish(){
   generateCalendar();
   renderPosts(selectedDate);
 }
+
+// ================= WEBHOOK SIMPLES (TEXTBOX) =================
+
 function sendToDiscord(){
   const message = document.getElementById("discordMessage").value;
 
@@ -176,15 +218,56 @@ function sendToDiscord(){
       content: message
     })
   })
-  .then(() => {
-    alert("Mensagem enviada para o amor da sua vida <3 ");
+  .then(()=>{
+    alert("Mensagem enviada 💖");
     document.getElementById("discordMessage").value = "";
   })
-  .catch(() => {
+  .catch(()=>{
     alert("Erro ao enviar 😢");
   });
 }
 
+// ================= TELA DE LOGIN =================
+
+const SENHA_CORRETA = "2709";
+
+function checkAccessOnLoad(){
+
+  const hoje = new Date();
+  const dia = hoje.getDate();
+  const mes = hoje.getMonth() + 1;
+
+  const liberadoPermanentemente = localStorage.getItem("liberado");
+
+  // Se já foi liberado uma vez, nunca mais bloqueia
+  if(liberadoPermanentemente === "true"){
+    document.getElementById("lockScreen").style.display = "none";
+    return;
+  }
+
+  // Se for 27/02 ou depois
+  if(mes > 2 || (mes === 2 && dia >= 27)){
+    localStorage.setItem("liberado", "true");
+    document.getElementById("lockScreen").style.display = "none";
+  }
+}
+
+function checkPassword(){
+
+  const senha = document.getElementById("passwordInput").value;
+
+  if(senha === SENHA_CORRETA){
+    localStorage.setItem("liberado", "true");
+    document.getElementById("lockScreen").style.display = "none";
+  } else {
+    document.getElementById("lockMessage").innerText =
+    "Senha incorreta 💔";
+  }
+}
+
+// ================= INIT =================
+
+checkAccessOnLoad();
 updateTimer();
 populateSelectors();
 generateCalendar();
