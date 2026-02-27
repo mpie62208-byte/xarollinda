@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nosso Cantinho 💖</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="app">
+
+<header>
+  <h1>Nosso Cantinho 💖</h1>
+</header>
+
+<div class="timer" id="timer"></div>
+<div class="anniversary" id="anniversary"></div>
+
+<div class="calendar-controls">
+  <select id="month"></select>
+  <select id="year"></select>
+</div>
+
+<div class="calendar-grid" id="calendar"></div>
+
+<h3 id="selected-date-title" style="text-align:center;"></h3>
+<div id="posts"></div>
+
+<div class="actions">
+  <button onclick="openPostModal()">Adicionar memória 💕</button>
+</div>
+
+</div>
+
+<!-- MODAL -->
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <h3>Nova Memória 💕</h3>
+    <input type="text" id="post-date" readonly>
+    <input type="file" accept="image/*" onchange="previewImage(event)">
+    <img id="preview">
+    <textarea id="caption" placeholder="Escreve algo especial..."></textarea>
+    <button onclick="publish()">Publicar</button>
+    <button onclick="closeModal()">Fechar</button>
+  </div>
+</div>
+<div class="discord-box">
+  <textarea id="discordMessage" placeholder="Me mande um lembrete <3 💖"></textarea>
+  <button onclick="sendToDiscord()">Enviar 💖 🚀</button>
+</div>
+
+<script src="script.js"></script>
+
+</body>
+</html>
